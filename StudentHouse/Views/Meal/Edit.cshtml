@@ -1,0 +1,42 @@
+﻿@model Meal
+@{
+    ViewData["Title"] = "Edit meal";
+}
+
+<div class="m-1 p-1">
+    <h4 class="card-title">Pas vaardigheid aan</h4>
+
+    <form asp-controller="Meal" asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MealId" />
+        <div class="form-group">
+            Gerecht:
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            Omschrijving:
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+            <div class="form-group">
+            Datum:
+            <input asp-for="DateTime" class="form-control" />
+            <span asp-validation-for="DateTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            Maximaal aantal gasten:
+            <input asp-for="MaxGuests" class="form-control" />
+            <span asp-validation-for="MaxGuests" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            Prijs:
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Opslaan</button>
+            <button type="button" class="btn btn-outline-danger" onclick="location.href='../'">Terug naar de lijst</button>
+        </div>
+    </form>
+</div>

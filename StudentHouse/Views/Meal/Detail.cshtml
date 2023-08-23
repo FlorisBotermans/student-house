@@ -1,0 +1,39 @@
+﻿@model StudentHouse.Models.ViewModels.MealDetailModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="m-1 p-1">
+    <ul class="list-group col-6">
+        <li class="list-group-item active"><strong>Gerecht:</strong> @Model.Meal.Name</li>
+        <li class="list-group-item"><strong>Omschrijving:</strong> @Model.Meal.Description</li>
+        <li class="list-group-item"><strong>Kok:</strong> @Model.Meal.CookName</li>
+        <li class="list-group-item"><strong>Maximaal aantal gasten:</strong> @Model.Meal.MaxGuests</li>
+        <li class="list-group-item"><strong>Prijs:</strong> @Model.Meal.Price.ToString("c")</li>
+        <li class="list-group-item"><strong>Datum & Tijd:</strong> @Model.Meal.DateTime.Day-@Model.Meal.DateTime.Month-@Model.Meal.DateTime.Year @Model.Meal.DateTime.Hour:@Model.Meal.DateTime.Minute</li>
+    </ul>
+
+    <h4 id="guestList">Gastenlijst</h4>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th class="align-middle" scope="col">Gast</th>
+                <th class="align-middle" scope="col">Telefoonnummer</th>
+                <th class="align-middle" scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Student student in Model.Guests)
+            {
+                <tr>
+                    <td class="align-middle">@student.GetFullName()</td>
+                    <td class="align-middle">@student.PhoneNumber</td>
+                    <td class="align-middle">@student.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h6>Er zijn @Model.Guests.Count van de @Model.Meal.MaxGuests gasten ingeschreven.</h6>
+</div>
+

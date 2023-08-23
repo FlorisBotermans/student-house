@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Meal>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row m-1 p-1">
+    <div id="categories" class="col-3">
+        <div class="card card-outline-primary m-1 p-1">
+            <div class="bg-faded p-1">
+                @{
+                    bool mealToday = false;
+                    foreach (Meal meal in Model)
+                    {
+                        if (meal.DateTime.Day == DateTime.Now.Day && meal.DateTime.Month == DateTime.Now.Month && meal.DateTime.Year == DateTime.Now.Year)
+                        {
+                            mealToday = true;
+                            <p><strong>Gerecht voor vandaag:</strong> @meal.Name<br /><strong>Gasten aantal:</strong> @meal.Guests.Count</p>
+                        }
+                    }
+
+                    if (!mealToday)
+                    {
+                        <p><strong>Geen maaltijd vandaag.</strong></p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <h3>Maaltijden van @DateTime.Now.Day-@DateTime.Now.Month-@DateTime.Now.Year tot @DateTime.Now.AddDays(14).Day-@DateTime.Now.AddDays(14).Month-@DateTime.Now.AddDays(14).Year</h3>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="align-middle" scope="col">Gerecht</th>
+                    <th class="align-middle" scope="col">Datum</th>
+                    <th class="align-middle" scope="col">Prijs</th>
+                    <th class="align-middle" scope="col">Kok</th>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <th class="align-middle" scope="col">
+                            <a asp-controller="Meal" asp-action="Create" class="btn btn-success btn-sm float-right"><i class="material-icons md-18 md-light">add</i></a>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Meal meal in Model)
+                {
+                    if (meal.DateTime.Day >= DateTime.Now.Day && meal.DateTime.Month >= DateTime.Now.Month && meal.DateTime.Year >= DateTime.Now.Year && meal.DateTime < DateTime.Now.AddDays(15))
+                    {
+                        <tr>
+                            <td class="align-middle">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-controller="Meal" asp-action="Detail" asp-route-mealId="@meal.MealId"><strong>@meal.Name</strong></a>
+                                }
+                                else
+                                {
+                                    <strong>@meal.Name</strong>
+                                }
+                            </td>
+                            <td class="align-middle">@meal.DateTime.Day-@meal.DateTime.Month-@meal.DateTime.Year @meal.DateTime.Hour:@meal.DateTime.Minute</td>
+                            <td class="align-middle">@meal.Price.ToString("c")</td>
+                            <td class="align-middle">@meal.CookName</td>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <td class="align-middle text-right">
+                                    @if (meal.CookEmail == User.Identity.Name && meal.Guests.Count == 0)
+                                    {
+                                        <a asp-controller="Meal" asp-action="Edit" asp-route-mealId="@meal.MealId" class="btn btn-warning btn-sm"><i class="material-icons md-18 md-light">edit</i></a>
+                                        <a asp-controller="Meal" asp-action="Delete" class="btn btn-danger btn-sm" asp-route-mealId="@meal.MealId"><i class="material-icons md-18 md-light">delete</i></a>
+                                    }
+                                    @{
+                                        bool isSignedIn = false;
+                                        foreach (StudentMeal student in meal.Guests)
+                                        {
+                                            if (student.Student.Email == User.Identity.Name)
+                                            {
+                                                isSignedIn = true;
+                                                <a asp-controller="Meal" asp-action="DeleteGuestFromMeal" asp-route-mealId="@meal.MealId" class="btn btn-danger">Uitschrijven @meal.Guests.Count / @meal.MaxGuests</a>
+                                            }
+                                        }
+
+                                        if (!isSignedIn && meal.Guests.Count < meal.MaxGuests)
+                                        {
+                                            <a asp-controller="Meal" asp-action="AddGuestToMeal" asp-route-mealId="@meal.MealId" class="btn btn-primary">Inschrijven @meal.Guests.Count / @meal.MaxGuests</a>
+                                        }
+                                        else if (!isSignedIn && meal.Guests.Count == meal.MaxGuests)
+                                        {
+                                            <button class="btn btn-primary" disabled>@meal.Guests.Count / @meal.MaxGuests</button>
+                                        }
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
